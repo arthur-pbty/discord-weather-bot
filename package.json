@@ -1,0 +1,20 @@
+{
+  "name": "discord-meteo-bot",
+  "version": "1.0.0",
+  "description": "Bot Discord météo ultra-détaillé avec graphiques — Open-Meteo API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.53",
+    "axios": "^1.6.8",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.4.5",
+    "node-cron": "^3.0.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
