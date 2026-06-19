@@ -1,0 +1,46 @@
+# ── Dépendances (réinstallées dans le Dockerfile) ────────────────────────────
+node_modules
+npm-debug.log*
+yarn-error.log*
+.yarn
+
+# ── Secrets (ne jamais inclure dans l'image) ─────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── Git ───────────────────────────────────────────────────────────────────────
+.git
+.gitignore
+.gitattributes
+
+# ── Docker (évite les boucles de contexte) ───────────────────────────────────
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# ── Documentation ─────────────────────────────────────────────────────────────
+README.md
+*.md
+docs/
+
+# ── Système / IDE ─────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode
+.idea
+*.swp
+*.swo
+
+# ── Logs & temporaires ────────────────────────────────────────────────────────
+logs/
+*.log
+tmp/
+.tmp/
+
+# ── Tests ─────────────────────────────────────────────────────────────────────
+test/
+tests/
+*.test.js
+*.spec.js
+coverage/

@@ -7,6 +7,12 @@ const cron = require('node-cron');
 const path = require('path');
 const fs   = require('fs');
 
+// ─── Heartbeat Docker healthcheck ─────────────────────────────────────────────
+const HEARTBEAT_FILE = '/tmp/.bot-alive';
+const writeHeartbeat = () => {
+  try { fs.writeFileSync(HEARTBEAT_FILE, Date.now().toString()); } catch (_) {}
+};
+
 // ─── Validation des variables d'environnement ─────────────────────────────────
 const REQUIRED_ENV = ['DISCORD_TOKEN', 'CHANNEL_ID', 'LAT', 'LON'];
 for (const key of REQUIRED_ENV) {
@@ -37,6 +43,10 @@ client.once('ready', async () => {
   console.log(`\n🤖 Connecté en tant que ${client.user.tag}`);
   console.log(`📍 Localisation : ${process.env.LOCATION_NAME || `${process.env.LAT}°, ${process.env.LON}°`}`);
   console.log(`⏰ Message quotidien : ${process.env.SEND_HOUR}h${String(process.env.SEND_MINUTE || 0).padStart(2,'0')}\n`);
+
+  // Heartbeat immédiat + toutes les 30s pour Docker healthcheck
+  writeHeartbeat();
+  setInterval(writeHeartbeat, 30_000);
 
   // ── Enregistrement global des commandes slash ──────────────────────────────
   const rest    = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);

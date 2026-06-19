@@ -1,2 +1,24 @@
-/.env
-/node_modules
+# Dépendances
+node_modules/
+
+# Secrets — NE JAMAIS COMMITTER
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker runtime
+tmp/

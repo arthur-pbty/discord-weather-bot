@@ -1,0 +1,52 @@
+# ─── Discord Météo Bot — Docker Compose (production) ─────────────────────────
+# Usage :
+#   docker compose up -d --build     → Build + démarrage en arrière-plan
+#   docker compose logs -f            → Suivre les logs en temps réel
+#   docker compose restart meteo-bot  → Redémarrer le bot
+#   docker compose down               → Arrêter et supprimer les conteneurs
+
+services:
+
+  meteo-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # Forcer le rebuild si le code change :
+      # docker compose build --no-cache
+    image: discord-meteo-bot:latest
+    container_name: discord-meteo-bot
+    restart: unless-stopped
+
+    # ── Variables d'environnement ─────────────────────────────────────────────
+    # Le fichier .env est lu au démarrage du conteneur (jamais copié dans l'image)
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      TZ: Europe/Paris
+
+    # ── Ressources ────────────────────────────────────────────────────────────
+    deploy:
+      resources:
+        limits:
+          memory: 512M    # @napi-rs/canvas peut consommer ~150-200 Mo pour le canvas
+          cpus: "0.75"
+        reservations:
+          memory: 128M
+          cpus: "0.10"
+
+    # ── Healthcheck (reprend la config du Dockerfile, peut être surchargé ici) ─
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      interval: 60s
+      timeout: 10s
+      start_period: 45s
+      retries: 3
+
+    # ── Logs ──────────────────────────────────────────────────────────────────
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+        labels: "service=discord-meteo-bot"

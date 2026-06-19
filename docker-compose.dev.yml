@@ -1,0 +1,45 @@
+# ─── Override développement ───────────────────────────────────────────────────
+# Usage : docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+#
+# Différences avec la prod :
+#   • Hot-reload via --watch (Node 20+)
+#   • Code source monté en volume (pas besoin de rebuild à chaque modif)
+#   • DEBUG_METEO activé
+#   • Ressources non limitées
+#   • Pas de healthcheck (démarre plus vite)
+
+services:
+
+  meteo-bot:
+    build:
+      target: deps      # Utilise seulement le stage deps (plus rapide)
+    image: discord-meteo-bot:dev
+    container_name: discord-meteo-bot-dev
+
+    # Monter le code source en live (hot-reload)
+    volumes:
+      - .:/app
+      - /app/node_modules    # Conserver les node_modules du conteneur
+
+    command: node --watch index.js
+
+    environment:
+      NODE_ENV: development
+      DEBUG_METEO: "true"
+      TZ: Europe/Paris
+
+    # Pas de limite en dev
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: "2.0"
+
+    healthcheck:
+      disable: true
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
